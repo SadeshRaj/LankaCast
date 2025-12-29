@@ -1,17 +1,60 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Load Data
-    renderSinhala();
-    renderEnglish();
-    renderAlerts();
+    // 1. Initial Load of Data
+    renderNews('sinhalaNews', 'sinhala-container');
+    renderNews('englishNews', 'english-container');
+    renderNews('alertHistory', 'alerts-container');
     loadKeywords();
-
-    // 2. Tab Logic
     setupTabs();
 
-    // 3. Add Keyword Listener
+    // 2. Button Listeners
     document.getElementById('saveBtn').addEventListener('click', addKeyword);
+    document.getElementById('refreshBtn').addEventListener('click', forceRefresh);
 });
 
+// --- CORE FUNCTIONS ---
+
+// This was missing in your last file!
+function renderNews(storageKey, containerId) {
+    chrome.storage.local.get(storageKey, (data) => {
+        const container = document.getElementById(containerId);
+        const items = data[storageKey];
+
+        if (items && items.length > 0) {
+            container.innerHTML = items.map(item => `
+                <a href="${item.link}" target="_blank" class="news-item">
+                    <img src="${item.image}" class="news-img" loading="lazy">
+                    <div class="news-content">
+                        <div class="news-title">${item.title}</div>
+                        <div class="news-date">${item.date}</div>
+                    </div>
+                </a>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="loader">Waiting for updates...</div>';
+        }
+    });
+}
+
+function forceRefresh() {
+    const btn = document.getElementById('refreshBtn');
+    const container = document.getElementById('sinhala-container');
+
+    // Rotate Animation
+    btn.style.transform = "rotate(360deg)";
+    container.innerHTML = '<div class="loader">Refreshing BBC...</div>';
+
+    // Ask Background to Fetch
+    chrome.runtime.sendMessage({ action: "refreshNews" }, (response) => {
+        // Wait 1s and reload UI
+        setTimeout(() => {
+            renderNews('sinhalaNews', 'sinhala-container');
+            renderNews('englishNews', 'english-container');
+            btn.style.transform = "rotate(0deg)";
+        }, 1000);
+    });
+}
+
+// --- TAB LOGIC ---
 function setupTabs() {
     const btnSi = document.getElementById('btn-sinhala');
     const btnEn = document.getElementById('btn-english');
@@ -29,49 +72,11 @@ function setupTabs() {
 function switchTab(activeBtn, activeView, otherBtns, otherViews) {
     activeBtn.classList.add('active');
     activeView.classList.add('active-view');
-
     otherBtns.forEach(b => b.classList.remove('active'));
     otherViews.forEach(v => v.classList.remove('active-view'));
 }
 
-function renderSinhala() {
-    chrome.storage.local.get('sinhalaNews', (data) => {
-        const container = document.getElementById('sinhala-container');
-        renderList(container, data.sinhalaNews);
-    });
-}
-
-function renderEnglish() {
-    chrome.storage.local.get('englishNews', (data) => {
-        const container = document.getElementById('english-container');
-        renderList(container, data.englishNews);
-    });
-}
-
-function renderAlerts() {
-    chrome.storage.local.get('alertHistory', (data) => {
-        const container = document.getElementById('alerts-container');
-        renderList(container, data.alertHistory);
-    });
-}
-
-function renderList(container, items) {
-    if (items && items.length > 0) {
-        container.innerHTML = items.map(item => `
-            <a href="${item.link}" target="_blank" class="news-item">
-                <img src="${item.image}" class="news-img" loading="lazy">
-                <div class="news-content">
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-date">${item.date}</div>
-                </div>
-            </a>
-        `).join('');
-    } else {
-        container.innerHTML = '<div class="loader">No updates found.</div>';
-    }
-}
-
-// --- Keyword Logic (Same as before) ---
+// --- KEYWORD LOGIC ---
 function addKeyword() {
     const input = document.getElementById('keywordInput');
     const word = input.value.trim();
@@ -94,12 +99,15 @@ function loadKeywords() {
         (data.keywords || []).forEach(word => {
             const tag = document.createElement('div');
             tag.className = 'tag';
+
             const span = document.createElement('span');
             span.textContent = word;
+
             const remove = document.createElement('span');
             remove.className = 'remove-tag';
             remove.textContent = 'x';
             remove.addEventListener('click', () => removeKeyword(word));
+
             tag.append(span, remove);
             div.appendChild(tag);
         });

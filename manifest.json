@@ -1,16 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "LankaCast - Dual Language News",
-  "version": "3.0",
-  "description": "Live Sinhala and English news from Ada Derana with Instant Alerts.",
+  "name": "LankaCast - BBC & Derana",
+  "version": "3.1",
+  "description": "Sinhala News from BBC and English News from Ada Derana.",
   "permissions": [
     "alarms",
     "storage",
     "notifications"
   ],
   "host_permissions": [
-    "http://sinhala.adaderana.lk/*",
-    "https://sinhala.adaderana.lk/*",
+    "https://feeds.bbci.co.uk/*",
     "http://www.adaderana.lk/*",
     "https://www.adaderana.lk/*"
   ],
@@ -20,14 +19,14 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icon16.png",
-      "48": "icon48.png",
-      "128": "icon128.png"
+      "16": "images/SL128.png",
+      "48": "images/SL128.png",
+      "128": "images/LankaCast.png"
     }
   },
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "images/SL128.png",
+    "48": "images/LankaCast.png",
+    "128": "images/LankaCast.png"
   }
 }

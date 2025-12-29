@@ -2,15 +2,15 @@
 <html lang="si">
 <head>
     <meta charset="UTF-8">
-    <title>LankaCast</title>
+    <title>LankaCast By Kairo</title>
     <link rel="stylesheet" href="popup.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="header">
-    <h1>LankaCast</h1>
-    <span class="status">LIVE</span>
+    <h1>LankaCast By Kairo</h1>
+    <button id="refreshBtn" class="refresh-btn">↻</button>
 </div>
 
 <div class="tabs">
@@ -21,13 +21,13 @@
 
 <div id="view-sinhala" class="tab-content active-view">
     <div id="sinhala-container">
-        <div class="loader">Loading Sinhala News...</div>
+        <div class="loader">Loading BBC Sinhala...</div>
     </div>
 </div>
 
 <div id="view-english" class="tab-content">
     <div id="english-container">
-        <div class="loader">Loading English News...</div>
+        <div class="loader">Loading Ada Derana...</div>
     </div>
 </div>
 
@@ -37,13 +37,13 @@
         <button id="saveBtn">Add</button>
     </div>
     <div id="activeKeywords" class="tags"></div>
-
-    <div class="section-title">Keyword Matches History</div>
+    <div class="section-title">Alert History</div>
     <div id="alerts-container">
-        <div class="loader">No keyword alerts yet.</div>
+        <div class="loader">No alerts yet.</div>
     </div>
 </div>
 
 <script src="popup.js"></script>
+
 </body>
 </html>
