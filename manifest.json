@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "LankaCast - Live Sinhala News",
+  "version": "2.0",
+  "description": "Live Ada Derana news with Keyword Alerts.",
+  "permissions": [
+    "alarms",
+    "storage",
+    "notifications"
+  ],
+  "host_permissions": [
+    "*://*.adaderana.lk/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

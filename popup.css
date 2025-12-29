@@ -1,0 +1,29 @@
+body { width: 360px; font-family: 'Noto Sans Sinhala', sans-serif; margin: 0; background-color: #f4f4f4; }
+
+.header { background-color: #aa0000; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+.header h1 { margin: 0; font-size: 18px; }
+.status { font-size: 10px; background: white; color: #aa0000; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+
+/* TABS STYLING */
+.tabs { display: flex; background: #fff; border-bottom: 1px solid #ddd; }
+.tab-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #666; border-bottom: 3px solid transparent; }
+.tab-btn.active { color: #aa0000; border-bottom: 3px solid #aa0000; }
+.tab-content { display: none; }
+.tab-content.active-view { display: block; }
+
+/* SETTINGS */
+.settings { padding: 10px; background: #fff; display: flex; gap: 5px; }
+input { flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Noto Sans Sinhala', sans-serif; }
+button#saveBtn { background: #333; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 4px; font-weight: bold;}
+
+.tags { padding: 5px 10px; display: flex; flex-wrap: wrap; gap: 5px; background: white; min-height: 10px; margin-bottom: 10px;}
+.tag { background: #eee; font-size: 11px; padding: 4px 8px; border-radius: 12px; display: flex; align-items: center; gap: 5px; }
+.remove-tag { color: red; cursor: pointer; font-weight: bold; margin-left: 5px;}
+
+/* NEWS ITEMS */
+.news-item { background: white; margin: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-decoration: none; color: black; display: flex; height: 90px; }
+.news-img { width: 120px; height: 100%; object-fit: cover; background: #ddd;}
+.news-content { padding: 10px; display: flex; flex-direction: column; justify-content: center; width: 100%;}
+.news-title { font-size: 13px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;}
+.news-date { font-size: 10px; color: #777; margin-top: 5px; }
+.loader { text-align: center; padding: 20px; color: #999; font-size: 12px;}
