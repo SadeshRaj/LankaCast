@@ -1,67 +1,77 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initial Load
-    loadNews();
+    // 1. Load Data
+    renderSinhala();
+    renderEnglish();
+    renderAlerts();
     loadKeywords();
-    loadAlertHistory();
 
-    // 2. Tab Switching Logic
-    const btnLive = document.getElementById('btn-live');
-    const btnAlerts = document.getElementById('btn-alerts');
-    const viewLive = document.getElementById('view-live');
-    const viewAlerts = document.getElementById('view-alerts');
+    // 2. Tab Logic
+    setupTabs();
 
-    btnLive.addEventListener('click', () => {
-        btnLive.classList.add('active');
-        btnAlerts.classList.remove('active');
-        viewLive.classList.add('active-view');
-        viewAlerts.classList.remove('active-view');
-    });
-
-    btnAlerts.addEventListener('click', () => {
-        btnAlerts.classList.add('active');
-        btnLive.classList.remove('active');
-        viewAlerts.classList.add('active-view');
-        viewLive.classList.remove('active-view');
-    });
-
-    // 3. Button Listeners (Fixing CSP Error)
+    // 3. Add Keyword Listener
     document.getElementById('saveBtn').addEventListener('click', addKeyword);
 });
 
-function renderNewsItem(item) {
-    return `
-        <a href="${item.link}" target="_blank" class="news-item">
-            <img src="${item.image}" class="news-img" loading="lazy">
-            <div class="news-content">
-                <div class="news-title">${item.title}</div>
-                <div class="news-date">${item.date}</div>
-            </div>
-        </a>
-    `;
+function setupTabs() {
+    const btnSi = document.getElementById('btn-sinhala');
+    const btnEn = document.getElementById('btn-english');
+    const btnAl = document.getElementById('btn-alerts');
+
+    const viewSi = document.getElementById('view-sinhala');
+    const viewEn = document.getElementById('view-english');
+    const viewAl = document.getElementById('view-alerts');
+
+    btnSi.addEventListener('click', () => switchTab(btnSi, viewSi, [btnEn, btnAl], [viewEn, viewAl]));
+    btnEn.addEventListener('click', () => switchTab(btnEn, viewEn, [btnSi, btnAl], [viewSi, viewAl]));
+    btnAl.addEventListener('click', () => switchTab(btnAl, viewAl, [btnSi, btnEn], [viewSi, viewEn]));
 }
 
-function loadNews() {
-    chrome.storage.local.get('latestNews', (data) => {
-        const container = document.getElementById('news-container');
-        if (data.latestNews && data.latestNews.length > 0) {
-            container.innerHTML = data.latestNews.map(item => renderNewsItem(item)).join('');
-        } else {
-            container.innerHTML = '<div class="loader">Waiting for news...</div>';
-        }
+function switchTab(activeBtn, activeView, otherBtns, otherViews) {
+    activeBtn.classList.add('active');
+    activeView.classList.add('active-view');
+
+    otherBtns.forEach(b => b.classList.remove('active'));
+    otherViews.forEach(v => v.classList.remove('active-view'));
+}
+
+function renderSinhala() {
+    chrome.storage.local.get('sinhalaNews', (data) => {
+        const container = document.getElementById('sinhala-container');
+        renderList(container, data.sinhalaNews);
     });
 }
 
-function loadAlertHistory() {
+function renderEnglish() {
+    chrome.storage.local.get('englishNews', (data) => {
+        const container = document.getElementById('english-container');
+        renderList(container, data.englishNews);
+    });
+}
+
+function renderAlerts() {
     chrome.storage.local.get('alertHistory', (data) => {
         const container = document.getElementById('alerts-container');
-        if (data.alertHistory && data.alertHistory.length > 0) {
-            container.innerHTML = data.alertHistory.map(item => renderNewsItem(item)).join('');
-        } else {
-            container.innerHTML = '<div class="loader">No alerts triggered yet.</div>';
-        }
+        renderList(container, data.alertHistory);
     });
 }
 
+function renderList(container, items) {
+    if (items && items.length > 0) {
+        container.innerHTML = items.map(item => `
+            <a href="${item.link}" target="_blank" class="news-item">
+                <img src="${item.image}" class="news-img" loading="lazy">
+                <div class="news-content">
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-date">${item.date}</div>
+                </div>
+            </a>
+        `).join('');
+    } else {
+        container.innerHTML = '<div class="loader">No updates found.</div>';
+    }
+}
+
+// --- Keyword Logic (Same as before) ---
 function addKeyword() {
     const input = document.getElementById('keywordInput');
     const word = input.value.trim();
@@ -84,29 +94,21 @@ function loadKeywords() {
         (data.keywords || []).forEach(word => {
             const tag = document.createElement('div');
             tag.className = 'tag';
-
-            // Create span for text
-            const textSpan = document.createElement('span');
-            textSpan.textContent = word;
-
-            // Create X button
-            const removeBtn = document.createElement('span');
-            removeBtn.className = 'remove-tag';
-            removeBtn.textContent = 'x';
-
-            // Add click event securely
-            removeBtn.addEventListener('click', () => removeKeyword(word));
-
-            tag.appendChild(textSpan);
-            tag.appendChild(removeBtn);
+            const span = document.createElement('span');
+            span.textContent = word;
+            const remove = document.createElement('span');
+            remove.className = 'remove-tag';
+            remove.textContent = 'x';
+            remove.addEventListener('click', () => removeKeyword(word));
+            tag.append(span, remove);
             div.appendChild(tag);
         });
     });
 }
 
-function removeKeyword(wordToRemove) {
-    chrome.storage.local.get('keywords', (data) => {
-        const keywords = data.keywords.filter(w => w !== wordToRemove);
+function removeKeyword(word) {
+    chrome.storage.local.get('keywords', (d) => {
+        const keywords = d.keywords.filter(w => w !== word);
         chrome.storage.local.set({ keywords }, loadKeywords);
     });
 }

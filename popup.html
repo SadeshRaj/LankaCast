@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>LankaCast</title>
     <link rel="stylesheet" href="popup.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -14,26 +14,33 @@
 </div>
 
 <div class="tabs">
-    <button id="btn-live" class="tab-btn active">Live News</button>
-    <button id="btn-alerts" class="tab-btn">My Alerts</button>
+    <button id="btn-sinhala" class="tab-btn active">Sinhala</button>
+    <button id="btn-english" class="tab-btn">English</button>
+    <button id="btn-alerts" class="tab-btn" style="color:#aa0000;">Alerts</button>
 </div>
 
-<div id="view-live" class="tab-content active-view">
-    <div id="news-container">
-        <div class="loader">Loading updates...</div>
+<div id="view-sinhala" class="tab-content active-view">
+    <div id="sinhala-container">
+        <div class="loader">Loading Sinhala News...</div>
+    </div>
+</div>
+
+<div id="view-english" class="tab-content">
+    <div id="english-container">
+        <div class="loader">Loading English News...</div>
     </div>
 </div>
 
 <div id="view-alerts" class="tab-content">
     <div class="settings">
-        <input type="text" id="keywordInput" placeholder="Add keyword (e.g. ක්‍රිකට්)">
-        <button id="saveBtn">+</button>
+        <input type="text" id="keywordInput" placeholder="Keyword (e.g. Cricket)">
+        <button id="saveBtn">Add</button>
     </div>
     <div id="activeKeywords" class="tags"></div>
 
-    <h3 style="font-size: 12px; color: #666; padding-left: 10px;">Alert History</h3>
+    <div class="section-title">Keyword Matches History</div>
     <div id="alerts-container">
-        <div class="loader">No alerts yet.</div>
+        <div class="loader">No keyword alerts yet.</div>
     </div>
 </div>
 

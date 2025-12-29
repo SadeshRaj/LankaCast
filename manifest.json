@@ -1,15 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "LankaCast - Live Sinhala News",
-  "version": "2.0",
-  "description": "Live Ada Derana news with Keyword Alerts.",
+  "name": "LankaCast - Dual Language News",
+  "version": "3.0",
+  "description": "Live Sinhala and English news from Ada Derana with Instant Alerts.",
   "permissions": [
     "alarms",
     "storage",
     "notifications"
   ],
   "host_permissions": [
-    "*://*.adaderana.lk/*"
+    "http://sinhala.adaderana.lk/*",
+    "https://sinhala.adaderana.lk/*",
+    "http://www.adaderana.lk/*",
+    "https://www.adaderana.lk/*"
   ],
   "background": {
     "service_worker": "background.js"
