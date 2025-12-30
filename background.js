@@ -25,7 +25,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === ALARM_NAME) fetchAllNews();
 });
 
-// --- FETCH LOGIC (WITH CACHE BUSTING) ---
+// --- FETCH LOGIC ---
 async function fetchAllNews() {
     await fetchFeed(URL_SINHALA, 'sinhalaNews', 'lastSinhalaLink', true);
     await fetchFeed(URL_ENGLISH, 'englishNews', 'lastEnglishLink', false);
@@ -33,8 +33,7 @@ async function fetchAllNews() {
 
 async function fetchFeed(url, storageKey, lastLinkKey, isSinhala) {
     try {
-        // FIX: Add a unique timestamp to the URL to force a fresh download
-        // Example: https://.../rss.php?t=1708493021
+        // Cache busting to ensure we get the latest version
         const noCacheUrl = `${url}?t=${Date.now()}`;
 
         const response = await fetch(noCacheUrl, {
@@ -67,20 +66,16 @@ function parseRSS(xmlText, isSinhala) {
         const content = rawItems[i];
         if (!content.includes("</item>")) continue;
 
-        // Title
         let title = "News Update";
         const titleMatch = content.match(/<title>([\s\S]*?)<\/title>/);
         if (titleMatch) title = titleMatch[1].replace("<![CDATA[", "").replace("]]>", "").trim();
 
-        // Link
         let link = "#";
         const linkMatch = content.match(/<link>(.*?)<\/link>/);
         if (linkMatch) link = linkMatch[1];
 
-        // Image
         let image = "images/SL128.png";
         const imgTagMatch = content.match(/src=["']([^"']+)["']/);
-
         if (imgTagMatch) {
             const scrapedImg = imgTagMatch[1];
             if (scrapedImg.startsWith("http") || scrapedImg.startsWith("//")) {
@@ -89,15 +84,11 @@ function parseRSS(xmlText, isSinhala) {
             }
         }
 
-        // Date
         let date = "Recent";
         const dateMatch = content.match(/<pubDate>(.*?)<\/pubDate>/);
         if (dateMatch) {
-            if (isSinhala) {
-                date = extractRawTime(dateMatch[1]);
-            } else {
-                date = formatStandardTime(dateMatch[1]);
-            }
+            if (isSinhala) date = extractRawTime(dateMatch[1]);
+            else date = formatStandardTime(dateMatch[1]);
         }
 
         items.push({ title, link, image, date });
@@ -122,17 +113,13 @@ function extractRawTime(dateString) {
 function formatStandardTime(dateString) {
     try {
         const d = new Date(dateString);
-        return d.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
+        return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     } catch (e) {
         return "Recent";
     }
 }
 
-// --- NOTIFICATIONS ---
+// --- NOTIFICATIONS (UPDATED) ---
 function checkForNewNews(items, lastLinkKey) {
     if (!items || items.length === 0) return;
 
@@ -140,7 +127,7 @@ function checkForNewNews(items, lastLinkKey) {
         const lastLink = data[lastLinkKey] || "";
         const latestStory = items[0];
 
-        // IF NEW NEWS IS DETECTED
+        // IF NEW NEWS
         if (latestStory.link !== lastLink) {
 
             const keywords = data.keywords || [];
@@ -158,7 +145,12 @@ function checkForNewNews(items, lastLinkKey) {
                 });
             }
 
-            // Notification
+            // --- 1. SET BADGE FIRST (Since we know this works) ---
+            chrome.action.setBadgeText({ text: "1" });
+            chrome.action.setBadgeBackgroundColor({ color: "#D32F2F" });
+
+            // --- 2. TRIGGER NOTIFICATION ---
+            // We use 'requireInteraction: true' to force it to stay on screen
             const iconUrl = chrome.runtime.getURL("images/SL128.png");
 
             chrome.notifications.create(latestStory.link, {
@@ -167,19 +159,16 @@ function checkForNewNews(items, lastLinkKey) {
                 title: notifTitle,
                 message: notifMessage,
                 priority: 2,
-                silent: false
+                requireInteraction: true  // <--- KEY CHANGE: Keeps notification on screen
             }, (id) => {
-                // Auto-close after 5 seconds
-                setTimeout(() => {
-                    if (id) chrome.notifications.clear(id);
-                }, 5000);
+                if (chrome.runtime.lastError) {
+                    console.error("NOTIFICATION ERROR:", chrome.runtime.lastError);
+                } else {
+                    console.log("Notification sent successfully:", id);
+                }
             });
 
-            // Update Badge
-            chrome.action.setBadgeText({ text: "1" });
-            chrome.action.setBadgeBackgroundColor({ color: "#D32F2F" });
-
-            // Update Storage
+            // --- 3. UPDATE STORAGE ---
             let updateData = {};
             updateData[lastLinkKey] = latestStory.link;
             chrome.storage.local.set(updateData);
