@@ -11,7 +11,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 chrome.notifications.onClicked.addListener((notificationId) => {
-    // Check if the ID looks like a URL (since we use the link as the ID)
     if (notificationId && (notificationId.startsWith("http") || notificationId.startsWith("https"))) {
         chrome.tabs.create({ url: notificationId });
     }
@@ -26,7 +25,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === ALARM_NAME) fetchAllNews();
 });
 
-// --- FETCH LOGIC ---
+// --- FETCH LOGIC (WITH CACHE BUSTING) ---
 async function fetchAllNews() {
     await fetchFeed(URL_SINHALA, 'sinhalaNews', 'lastSinhalaLink', true);
     await fetchFeed(URL_ENGLISH, 'englishNews', 'lastEnglishLink', false);
@@ -34,7 +33,11 @@ async function fetchAllNews() {
 
 async function fetchFeed(url, storageKey, lastLinkKey, isSinhala) {
     try {
-        const response = await fetch(url, {
+        // FIX: Add a unique timestamp to the URL to force a fresh download
+        // Example: https://.../rss.php?t=1708493021
+        const noCacheUrl = `${url}?t=${Date.now()}`;
+
+        const response = await fetch(noCacheUrl, {
             cache: "no-store",
             credentials: 'omit'
         });
@@ -129,7 +132,7 @@ function formatStandardTime(dateString) {
     }
 }
 
-// --- NOTIFICATIONS (FIXED) ---
+// --- NOTIFICATIONS ---
 function checkForNewNews(items, lastLinkKey) {
     if (!items || items.length === 0) return;
 
@@ -155,33 +158,28 @@ function checkForNewNews(items, lastLinkKey) {
                 });
             }
 
-            // --- NOTIFICATION FIX ---
-            // 1. Use absolute path for icon
+            // Notification
             const iconUrl = chrome.runtime.getURL("images/SL128.png");
 
-            // 2. Create Notification
             chrome.notifications.create(latestStory.link, {
                 type: 'basic',
                 iconUrl: iconUrl,
                 title: notifTitle,
                 message: notifMessage,
-                priority: 2,      // High priority
-                silent: false     // Force sound/alert
+                priority: 2,
+                silent: false
             }, (id) => {
-                if (chrome.runtime.lastError) {
-                    console.error("Notification failed:", chrome.runtime.lastError);
-                }
                 // Auto-close after 5 seconds
                 setTimeout(() => {
                     if (id) chrome.notifications.clear(id);
                 }, 5000);
             });
 
-            // 3. Update Badge
+            // Update Badge
             chrome.action.setBadgeText({ text: "1" });
             chrome.action.setBadgeBackgroundColor({ color: "#D32F2F" });
 
-            // 4. Update Storage
+            // Update Storage
             let updateData = {};
             updateData[lastLinkKey] = latestStory.link;
             chrome.storage.local.set(updateData);
