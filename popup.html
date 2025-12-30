@@ -2,26 +2,31 @@
 <html lang="si">
 <head>
     <meta charset="UTF-8">
-    <title>LankaCast By Kairo</title>
+    <title>LankaCast</title>
     <link rel="stylesheet" href="popup.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="header">
-    <h1>LankaCast By Kairo</h1>
-    <button id="refreshBtn" class="refresh-btn">↻</button>
+    <div class="header-left">
+        <h1>LankaCast</h1>
+    </div>
+    <div class="header-right">
+        <button id="themeBtn" class="icon-btn" title="Toggle Dark Mode">🌙</button>
+        <button id="refreshBtn" class="icon-btn" title="Refresh">↻</button>
+    </div>
 </div>
 
 <div class="tabs">
     <button id="btn-sinhala" class="tab-btn active">Sinhala</button>
     <button id="btn-english" class="tab-btn">English</button>
-    <button id="btn-alerts" class="tab-btn" style="color:#aa0000;">Alerts</button>
+    <button id="btn-alerts" class="tab-btn alert-tab-btn">Alerts</button>
 </div>
 
 <div id="view-sinhala" class="tab-content active-view">
     <div id="sinhala-container">
-        <div class="loader">Loading BBC Sinhala...</div>
+        <div class="loader">Loading Ada Derana...</div>
     </div>
 </div>
 
@@ -41,6 +46,10 @@
     <div id="alerts-container">
         <div class="loader">No alerts yet.</div>
     </div>
+</div>
+
+<div class="footer">
+    Developed by <strong>SadeshRaj</strong> | v3.4
 </div>
 
 <script src="popup.js"></script>

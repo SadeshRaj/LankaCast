@@ -1,17 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "LankaCast - BBC & Derana",
-  "version": "3.1",
-  "description": "Sinhala News from BBC and English News from Ada Derana.",
+  "name": "LankaCast - News Alerts",
+  "version": "3.4",
+  "description": "Sinhala and English News from Ada Derana with Auto-Alerts.",
   "permissions": [
     "alarms",
     "storage",
     "notifications"
   ],
   "host_permissions": [
-    "https://feeds.bbci.co.uk/*",
     "http://www.adaderana.lk/*",
-    "https://www.adaderana.lk/*"
+    "https://www.adaderana.lk/*",
+    "https://sinhala.adaderana.lk/*"
   ],
   "background": {
     "service_worker": "background.js"

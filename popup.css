@@ -1,30 +1,170 @@
-body { width: 380px; font-family: 'Roboto', 'Noto Sans Sinhala', sans-serif; margin: 0; background-color: #f8f8f8; }
+/* ROOT VARIABLES (Light Mode Defaults) */
+:root {
+    --bg-color: #f8f8f8;
+    --text-color: #000;
+    --card-bg: #fff;
+    --card-shadow: rgba(0,0,0,0.1);
+    --header-bg: #d32f2f;
+    --border-color: #eee;
+    --hover-bg: #eee;
 
-.header { background-color: #d32f2f; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    /* Tab Colors (Light Mode) */
+    --tab-text: #5f6368;        /* Dark Gray for inactive tabs */
+    --tab-active: #d32f2f;      /* Standard Red for active tab */
+    --tab-alert: #aa0000;       /* Dark Red for Alerts tab (Special) */
+    --meta-color: #888;
+}
+
+/* DARK MODE OVERRIDES */
+body.dark-mode {
+    --bg-color: #202124;
+    --text-color: #e8eaed;
+    --card-bg: #292a2d;
+    --card-shadow: rgba(0,0,0,0.5);
+    --header-bg: #b71c1c;
+    --border-color: #3c4043;
+    --hover-bg: #3c4043;
+
+    /* Tab Colors (Dark Mode - Brightened for Visibility) */
+    --tab-text: #9aa0a6;        /* Light Gray for inactive */
+    --tab-active: #ff8a80;      /* Pastel Red for active (Readable on dark) */
+    --tab-alert: #ff5252;       /* Bright Red for Alerts tab */
+    --meta-color: #9aa0a6;
+}
+
+body {
+    width: 380px;
+    font-family: 'Roboto', 'Noto Sans Sinhala', sans-serif;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding-bottom: 30px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* HEADER */
+.header {
+    background-color: var(--header-bg);
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .header h1 { margin: 0; font-size: 18px; font-weight: 700; }
+.header-right { display: flex; gap: 10px; }
 
-.refresh-btn { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; font-size: 16px; cursor: pointer; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-.refresh-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+/* BUTTONS */
+.icon-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.2); }
 
-.tabs { display: flex; background: #fff; border-bottom: 1px solid #ddd; }
-.tab-btn { flex: 1; padding: 12px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #777; border-bottom: 3px solid transparent; }
-.tab-btn.active { color: #d32f2f; border-bottom: 3px solid #d32f2f; }
+/* TABS */
+.tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border-color); }
 
-.tab-content { display: none; padding-top: 5px; }
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-weight: 600;
+
+    /* Use the variable! */
+    color: var(--tab-text);
+    border-bottom: 3px solid transparent;
+    transition: color 0.3s;
+}
+
+/* Specific Style for the Alerts Tab (Inactive state) */
+.alert-tab-btn {
+    color: var(--tab-alert);
+}
+
+/* Active State (Overrides everything) */
+.tab-btn.active {
+    color: var(--tab-active);
+    border-bottom: 3px solid var(--tab-active);
+}
+
+.tab-content { display: none; padding-top: 5px; height: 400px; overflow-y: auto; }
 .tab-content.active-view { display: block; }
 
-.settings { padding: 10px; background: #fff; display: flex; gap: 5px; border-bottom: 1px solid #eee; }
-input { flex-grow: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
-button#saveBtn { background: #333; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 4px; }
+/* NEWS ITEMS */
+.news-item {
+    background: var(--card-bg);
+    margin: 8px 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px var(--card-shadow);
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    height: 95px;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
 
-.tags { padding: 10px; display: flex; flex-wrap: wrap; gap: 5px; background: white; }
-.tag { background: #eee; font-size: 12px; padding: 4px 10px; border-radius: 15px; display: flex; gap: 8px; }
-.remove-tag { color: red; cursor: pointer; font-weight: bold; }
-
-.news-item { background: white; margin: 8px 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-decoration: none; color: black; display: flex; height: 90px; }
-.news-img { width: 120px; height: 90px; object-fit: cover; background: #eee; }
+.news-img { width: 120px; height: 100%; object-fit: cover; background: #eee; }
 .news-content { padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; width: 100%; }
-.news-title { font-size: 13px; font-weight: 600; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-.news-date { font-size: 11px; color: #888; margin-top: 5px; }
-.loader { text-align: center; padding: 20px; color: #999; }
-.section-title { font-size: 11px; color: #888; padding: 5px 10px; font-weight: bold; text-transform: uppercase;}
+
+.news-title {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 5px;
+}
+
+.news-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+}
+.news-date { font-size: 11px; color: var(--meta-color); }
+
+/* WHATSAPP SHARE BUTTON */
+.wa-share {
+    background-color: #25D366;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    transition: 0.2s;
+}
+.wa-share:hover { background-color: #128C7E; }
+
+/* SETTINGS */
+.settings { padding: 10px; background: var(--card-bg); display: flex; gap: 5px; border-bottom: 1px solid var(--border-color); }
+input { flex-grow: 1; padding: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); border-radius: 4px; font-family: inherit; }
+button#saveBtn { background: #333; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 4px; }
+body.dark-mode button#saveBtn { background: #555; } /* Lighter button in dark mode */
+
+.tags { padding: 10px; display: flex; flex-wrap: wrap; gap: 5px; background: var(--bg-color); }
+.tag { background: var(--hover-bg); color: var(--text-color); font-size: 12px; padding: 4px 10px; border-radius: 15px; display: flex; gap: 8px; }
+.remove-tag { color: var(--tab-active); cursor: pointer; font-weight: bold; }
+
+.footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg); color: var(--meta-color); text-align: center; padding: 8px 0; font-size: 11px; border-top: 1px solid var(--border-color); }
+.loader { text-align: center; padding: 20px; color: var(--meta-color); }
+.section-title { font-size: 11px; color: var(--meta-color); padding: 5px 10px; font-weight: bold; text-transform: uppercase;}

@@ -1,54 +1,112 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initial Load of Data
+    // 1. Initialize Theme
+    initTheme();
+
+    // 2. Clear Badge
+    chrome.action.setBadgeText({ text: "" });
+
+    // 3. Load Data
     renderNews('sinhalaNews', 'sinhala-container');
     renderNews('englishNews', 'english-container');
     renderNews('alertHistory', 'alerts-container');
     loadKeywords();
     setupTabs();
 
-    // 2. Button Listeners
+    // 4. Listeners
     document.getElementById('saveBtn').addEventListener('click', addKeyword);
     document.getElementById('refreshBtn').addEventListener('click', forceRefresh);
+    document.getElementById('themeBtn').addEventListener('click', toggleTheme);
 });
 
-// --- CORE FUNCTIONS ---
+// --- FIX: Global Image Error Handler (MV3 Compliant) ---
+// This listens for ANY image error on the page and fixes it.
+document.addEventListener('error', (event) => {
+    if (event.target.tagName.toLowerCase() === 'img') {
+        // Avoid infinite loop if backup image also fails
+        if (!event.target.getAttribute('data-failed')) {
+            event.target.setAttribute('data-failed', 'true');
+            event.target.src = 'images/SL128.png';
+        }
+    }
+}, true); // 'true' enables capturing phase
 
-// This was missing in your last file!
+// --- THEME LOGIC ---
+function initTheme() {
+    chrome.storage.local.get('theme', (data) => {
+        const btn = document.getElementById('themeBtn');
+        if (data.theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            btn.textContent = "☀️";
+        } else {
+            document.body.classList.remove('dark-mode');
+            btn.textContent = "🌙";
+        }
+    });
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('themeBtn');
+    body.classList.toggle('dark-mode');
+
+    const isDark = body.classList.contains('dark-mode');
+    const newTheme = isDark ? 'dark' : 'light';
+
+    btn.textContent = isDark ? "☀️" : "🌙";
+    chrome.storage.local.set({ theme: newTheme });
+}
+
+// --- RENDER LOGIC ---
 function renderNews(storageKey, containerId) {
     chrome.storage.local.get(storageKey, (data) => {
         const container = document.getElementById(containerId);
         const items = data[storageKey];
 
         if (items && items.length > 0) {
-            container.innerHTML = items.map(item => `
-                <a href="${item.link}" target="_blank" class="news-item">
-                    <img src="${item.image}" class="news-img" loading="lazy">
+            container.innerHTML = items.map(item => {
+                const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(item.title + "\n\n" + item.link)}`;
+
+                // NO 'onerror' HERE. The global listener handles it.
+                return `
+                <div class="news-item">
+                    <a href="${item.link}" target="_blank" style="display:contents; color:inherit; text-decoration:none;">
+                        <img src="${item.image}" class="news-img" loading="lazy">
+                    </a>
+                    
                     <div class="news-content">
-                        <div class="news-title">${item.title}</div>
-                        <div class="news-date">${item.date}</div>
+                        <a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit;">
+                            <div class="news-title">${item.title}</div>
+                        </a>
+
+                        <div class="news-meta">
+                            <span class="news-date">${item.date}</span>
+                            <a href="${waLink}" target="_blank" class="wa-share" title="Share on WhatsApp">
+                                <span>➦</span> WhatsApp
+                            </a>
+                        </div>
                     </div>
-                </a>
-            `).join('');
+                </div>
+            `;
+            }).join('');
         } else {
             container.innerHTML = '<div class="loader">Waiting for updates...</div>';
         }
     });
 }
 
+// --- FORCE REFRESH ---
 function forceRefresh() {
     const btn = document.getElementById('refreshBtn');
-    const container = document.getElementById('sinhala-container');
+    const containerSi = document.getElementById('sinhala-container');
 
-    // Rotate Animation
     btn.style.transform = "rotate(360deg)";
-    container.innerHTML = '<div class="loader">Refreshing BBC...</div>';
+    containerSi.style.opacity = "0.5";
 
-    // Ask Background to Fetch
-    chrome.runtime.sendMessage({ action: "refreshNews" }, (response) => {
-        // Wait 1s and reload UI
+    chrome.runtime.sendMessage({ action: "refreshNews" }, () => {
         setTimeout(() => {
             renderNews('sinhalaNews', 'sinhala-container');
             renderNews('englishNews', 'english-container');
+            containerSi.style.opacity = "1";
             btn.style.transform = "rotate(0deg)";
         }, 1000);
     });
@@ -76,7 +134,7 @@ function switchTab(activeBtn, activeView, otherBtns, otherViews) {
     otherViews.forEach(v => v.classList.remove('active-view'));
 }
 
-// --- KEYWORD LOGIC ---
+// --- KEYWORDS ---
 function addKeyword() {
     const input = document.getElementById('keywordInput');
     const word = input.value.trim();
