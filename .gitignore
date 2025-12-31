@@ -1,0 +1,22 @@
+.idea/
+*.iml
+*.iws
+
+# --- Mac OS & Windows System Files ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# --- Chrome Extension Build Files ---
+*.crx
+*.pem
+*.zip
+
+# --- Node.js ---
+node_modules/
+npm-debug.log
+yarn-error.log
+*.log
+
+# --- Local Environment Files ---
+.env
