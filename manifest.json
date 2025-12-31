@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LankaCast - News Alerts",
-  "version": "3.4",
+  "version": "4.0.0",
   "description": "Sinhala and English News from Ada Derana with Auto-Alerts.",
   "permissions": [
     "alarms",
