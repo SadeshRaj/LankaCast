@@ -35,7 +35,7 @@ Since this is a developer preview, you can download the latest version directly 
 
 * **📰 Dual-Language Hub:** Seamlessly switch between **Sinhala** and **English** news feeds in one popup.
 * **⚡ Auto-Refresh:** Background service workers fetch updates every minute to keep you current.
-* **🔔 Smart Alerts:** Set custom keywords (e.g., "Cricket", "Election") to receive instant notifications when they appear in the news.
+* **🔔 Smart Alerts:** Set custom keywords (e.g., "Cricket", "Election") to receive instant notifications when they appear in the news, even if popup notifications are turned off.
 * **🌙 Dark Mode:** Fully optimized dark theme that syncs with your preferences.
 * **📲 Quick Share:** Share any news item directly to **WhatsApp** with a single click.
 * **🛡️ Reliability:** Built on Manifest V3 for better performance and battery life.
@@ -98,14 +98,11 @@ Since this extension is in "Developer Mode" (not yet on the Chrome Web Store), f
 LankaCast/
 ├── manifest.json       # Extension configuration (Permissions, V3)
 ├── popup.html          # Main UI structure
-├── popup.css           # Styling (Light/Dark mode)
+├── popup.css           # Styling
 ├── popup.js            # UI logic & Data rendering
 ├── background.js       # Background fetcher & Notification logic
 ├── README.md           # Documentation
 └── images/             # Icons
-    ├── SLFlag.png
-    ├── LankaCast.png
-    └── devLogo.png
 ```
 ## 👨‍💻 Developer
 ### Developed with ❤️ by *SadeshRaj*.
