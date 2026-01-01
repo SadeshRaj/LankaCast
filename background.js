@@ -1,9 +1,9 @@
 const URL_SINHALA = "https://sinhala.adaderana.lk/rsshotnews.php";
 const URL_ENGLISH = "http://www.adaderana.lk/rss.php";
 const ALARM_NAME = "newsFetcher";
-const NOTIF_ICON = "images/LankaCast.png"; // Your Logo
+const NOTIF_ICON = "images/LankaCast.png";
 
-// --- EVENT LISTENERS ---
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === "refreshNews") {
         fetchAllNews().then(() => sendResponse({ status: "done" }));
@@ -20,14 +20,20 @@ chrome.notifications.onClicked.addListener((notificationId) => {
 chrome.runtime.onInstalled.addListener(() => {
     fetchAllNews();
     chrome.alarms.create(ALARM_NAME, { periodInMinutes: 1 });
-    chrome.storage.local.set({ notificationsEnabled: true });
+
+    chrome.storage.local.set({
+        notificationsEnabled: true,
+        unreadCount: 0,
+        alertHistory: []
+    });
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === ALARM_NAME) fetchAllNews();
+    if (alarm.name === 'analyticsHeartbeat') sendHeartbeat();
 });
 
-// --- FETCH LOGIC ---
+
 async function fetchAllNews() {
     await fetchFeed(URL_SINHALA, 'sinhalaNews', 'lastSinhalaLink');
     await fetchFeed(URL_ENGLISH, 'englishNews', 'lastEnglishLink');
@@ -46,18 +52,22 @@ async function fetchFeed(url, storageKey, lastLinkKey) {
             let data = {};
             data[storageKey] = items;
 
-            chrome.storage.local.get([lastLinkKey, 'notificationsEnabled'], (localData) => {
-                const lastLink = localData[lastLinkKey] || "";
-                chrome.storage.local.set(data);
-                checkForNewNews(items, lastLink, lastLinkKey, localData);
-            });
+
+            chrome.storage.local.get(
+                [lastLinkKey, 'notificationsEnabled', 'keywords', 'alertHistory', 'unreadCount'],
+                (localData) => {
+                    const lastLink = localData[lastLinkKey] || "";
+                    chrome.storage.local.set(data);
+                    checkForNewNews(items, lastLink, lastLinkKey, localData);
+                }
+            );
         }
     } catch (error) {
         console.warn(`LankaCast: Retrying ${storageKey} later.`, error);
     }
 }
 
-// --- PARSER (STRICT "REAL LETTER" FILTER) ---
+
 function parseRSS(xmlText) {
     const items = [];
     const rawItems = xmlText.split("<item>");
@@ -67,35 +77,19 @@ function parseRSS(xmlText) {
         if (!content.includes("</item>")) continue;
 
         let title = "";
-
-        // 1. Extract Title
         const titleMatch = content.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
         if (titleMatch && titleMatch[1]) {
             title = titleMatch[1].trim();
         }
 
-        // --- STRICT FILTER LOGIC ---
-        // 1. Block known Category Headers
         if (!title || title === "Local" || title === "Hot News") continue;
-
-        // 2. "Base Letter" Count Check
-        // We count ONLY:
-        // - English Letters (a-z, A-Z)
-        // - Numbers (0-9)
-        // - Sinhala Base Letters (\u0D85-\u0DC6) -> Vowels & Consonants only
-        // WE IGNORE: Punctuation (.,!), Sinhala Signs (\u0DCA-\u0DDF), and Kunddaliya (\u0DF4)
         const validCharCount = (title.match(/[a-zA-Z0-9\u0D85-\u0DC6]/g) || []).length;
-
-        // If the title has fewer than 3 real base letters, it is garbage.
-        // This kills "..." (0 letters), ".." (0 letters), "????" (0 letters).
         if (validCharCount < 3) continue;
-        // ---------------------------
 
         let link = "#";
         const linkMatch = content.match(/<link>(.*?)<\/link>/);
         if (linkMatch) link = linkMatch[1].trim();
 
-        // Image Extraction
         let image = null;
         const highResMatch = content.match(/(?:<enclosure|<media:content)[^>]*?url=["']([^"']+)["']/i);
         if (highResMatch && highResMatch[1]) image = highResMatch[1];
@@ -137,99 +131,127 @@ function parseDate(dateString) {
         if (!dateString) return null;
         let d = new Date(dateString);
         if (!isNaN(d.getTime())) return d.toISOString();
-
         let cleanDate = dateString
             .replace(/ජනවාරි/g, "Jan").replace(/පෙබරවාරි/g, "Feb").replace(/මාර්තු/g, "Mar")
             .replace(/අප්‍රේල්/g, "Apr").replace(/මැයි/g, "May").replace(/ජුනි/g, "Jun")
             .replace(/ජූලි/g, "Jul").replace(/අගෝස්තු/g, "Aug").replace(/සැප්තැම්බර්/g, "Sep")
             .replace(/ඔක්තෝබර්/g, "Oct").replace(/නොවැම්බර්/g, "Nov").replace(/දෙසැම්බර්/g, "Dec");
-
         d = new Date(cleanDate);
         if (!isNaN(d.getTime())) return d.toISOString();
         return null;
     } catch (e) { return null; }
 }
 
-// --- UPDATED NOTIFICATION & BADGE LOGIC ---
+
 function checkForNewNews(items, lastLink, lastLinkKey, localData) {
     if (!items || items.length === 0) return;
 
     const latestStory = items[0];
     let newItems = [];
 
+
     if (lastLink) {
         for (let i = 0; i < items.length; i++) {
             if (items[i].link === lastLink) break;
             newItems.push(items[i]);
         }
-    }
-
-    if (newItems.length > 0) {
-        const countText = newItems.length > 9 ? "9+" : newItems.length.toString();
-        chrome.action.setBadgeText({ text: countText });
-        chrome.action.setBadgeBackgroundColor({ color: "#D32F2F" });
+    } else {
 
         let updateData = {};
         updateData[lastLinkKey] = latestStory.link;
         chrome.storage.local.set(updateData);
-    } else if (!lastLink) {
-        let updateData = {};
-        updateData[lastLinkKey] = latestStory.link;
-        chrome.storage.local.set(updateData);
+        return;
     }
 
-    if (localData.notificationsEnabled !== false && newItems.length > 0) {
-        newItems.reverse().forEach((item, index) => {
+    if (newItems.length === 0) return;
+
+    // 1. Update Last Link
+    let updateData = {};
+    updateData[lastLinkKey] = latestStory.link;
+
+    // 2. Update Badge Count (Accumulative)
+    let currentUnread = localData.unreadCount || 0;
+    let totalUnread = currentUnread + newItems.length;
+
+    // Cap visual count at 99+ for safety, but store real number
+    const countText = totalUnread > 99 ? "99+" : totalUnread.toString();
+    chrome.action.setBadgeText({ text: countText });
+    chrome.action.setBadgeBackgroundColor({ color: "#D32F2F" });
+
+    updateData['unreadCount'] = totalUnread;
+
+    // 3. Process Notifications & Alert History
+    let updatedHistory = localData.alertHistory || [];
+    let keywords = localData.keywords || [];
+    const globalNotifEnabled = localData.notificationsEnabled !== false; // Default true
+
+    // Reverse to process oldest new item first
+    newItems.reverse().forEach((item, index) => {
+
+        // Check for Keyword Match
+        let isKeywordMatch = false;
+        if (keywords.length > 0) {
+            const titleLower = item.title.toLowerCase();
+            isKeywordMatch = keywords.some(k => titleLower.includes(k.toLowerCase()));
+        }
+
+        // Determine if we should notify
+        // Rule: Notify if Global is ON OR if Keyword Matches (even if Global is OFF)
+        const shouldNotify = globalNotifEnabled || isKeywordMatch;
+
+        if (shouldNotify) {
             setTimeout(() => {
                 chrome.notifications.create(item.link, {
                     type: 'basic',
                     iconUrl: NOTIF_ICON,
-                    title: "LankaCast News",
-                    message: item.title,
+                    title: isKeywordMatch ? `Alert: ${item.title}` : "LankaCast News",
+                    message: isKeywordMatch ? "Keyword Match Found" : item.title,
                     priority: 2,
                     requireInteraction: false
                 }, (notifId) => {
                     if (notifId) {
+                        // Updated Timeout: 8 Seconds
                         setTimeout(() => {
                             chrome.notifications.clear(notifId);
-                        }, 6000);
+                        }, 8000);
                     }
                 });
             }, index * 1000);
-        });
-    }
+        }
+
+        // Save to History ONLY if Keyword Match
+        if (isKeywordMatch) {
+            // Avoid duplicates in history
+            if (!updatedHistory.some(h => h.link === item.link)) {
+                updatedHistory.unshift(item); // Add to top
+            }
+        }
+    });
+
+    // Trim history to max 50 items to save space
+    if (updatedHistory.length > 50) updatedHistory = updatedHistory.slice(0, 50);
+
+    updateData['alertHistory'] = updatedHistory;
+    chrome.storage.local.set(updateData);
 }
 
-// --- USER TRACKING (GOOGLE ANALYTICS 4) ---
 const GA_MEASUREMENT_ID = 'G-G65EBSVJRQ';
 const GA_API_SECRET = 'qT05vYi1QqSfK14TDtQT0w';
 const GA_EVENT_NAME = 'daily_active_user';
 
-chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === ALARM_NAME) fetchAllNews();
-    if (alarm.name === 'analyticsHeartbeat') sendHeartbeat();
+chrome.storage.local.get('clientId', (data) => {
+    if (!data.clientId) {
+        const uniqueId = self.crypto.randomUUID();
+        chrome.storage.local.set({ clientId: uniqueId });
+    }
+    sendHeartbeat();
 });
-
-chrome.runtime.onInstalled.addListener(() => {
-    fetchAllNews();
-    chrome.alarms.create(ALARM_NAME, { periodInMinutes: 1 });
-    chrome.storage.local.set({ notificationsEnabled: true });
-
-    chrome.storage.local.get('clientId', (data) => {
-        if (!data.clientId) {
-            const uniqueId = self.crypto.randomUUID();
-            chrome.storage.local.set({ clientId: uniqueId });
-        }
-        sendHeartbeat();
-    });
-    chrome.alarms.create('analyticsHeartbeat', { periodInMinutes: 1440 });
-});
+chrome.alarms.create('analyticsHeartbeat', { periodInMinutes: 1440 });
 
 async function sendHeartbeat() {
     const data = await chrome.storage.local.get('clientId');
     const clientId = data.clientId;
     if (!clientId) return;
-
     try {
         await fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${GA_MEASUREMENT_ID}&api_secret=${GA_API_SECRET}`, {
             method: "POST",
@@ -237,13 +259,9 @@ async function sendHeartbeat() {
                 client_id: clientId,
                 events: [{
                     name: GA_EVENT_NAME,
-                    params: {
-                        engagement_time_msec: "100",
-                        session_id: Date.now().toString()
-                    }
+                    params: { engagement_time_msec: "100", session_id: Date.now().toString() }
                 }]
             })
         });
-    } catch (e) {
-    }
+    } catch (e) {}
 }
