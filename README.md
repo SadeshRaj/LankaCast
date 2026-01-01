@@ -25,11 +25,9 @@ Since this is a developer preview, you can download the latest version directly 
 |:---:|:---:|:---:|
 | ![Sinhala View](images/SS/lightSinhala.png) | ![English View](images/SS/darkEnglish.png) | ![Alerts Tab](images/SS/darkAlert.png) |
 
-| **WhatsApp Sharing** |
-|:---:|
-| ![WhatsApp Share](images/SS/WhatsappShare.png) |
-
-
+| **WhatsApp Sharing** | **Extension Installed** |
+|:---:|:---:|
+| ![WhatsApp Share](images/SS/WhatsappShare.png) | ![Pinned to Toolbar](images/SS/extensionDashboard.png) |
 
 ---
 
