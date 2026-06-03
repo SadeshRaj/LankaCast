@@ -6,16 +6,17 @@
 
 > **The ONE AND ONLY browser extension delivering both Sinhala and English news from Sri Lanka directly to your toolbar.**
 
-**LankaCast** is a unique, lightweight Chrome Extension designed for Sri Lankans. It fetches real-time news from **Ada Derana** and keeps you connected with what's happening in the island. It features automatic background updates, smart keyword alerts, dark mode, and one-click WhatsApp sharing.
+**LankaCast** is a unique, lightweight Chrome Extension designed for Sri Lankans. It fetches real-time news exclusively from **Ada Derana** and keeps you connected with what's happening in the island. It features automatic background updates, smart keyword alerts, dark mode, and one-click WhatsApp sharing.
 
 ---
 
 ## 📥 Download
-Since this is a developer preview, you can download the latest version directly from Google Drive:
 
-[![Download ZIP](https://img.shields.io/badge/Download-Google_Drive-FFD04B?style=for-the-badge&logo=google-drive&logoColor=black)](https://drive.google.com/drive/folders/15PSvn_ayfUBqu-Sr84MCvvwNH_AvtKyt?usp=sharing)
+LankaCast is officially available on the Chrome Web Store! You can install it directly to your browser with a single click:
 
-**[📂 Click Here to Access the Project Files](https://drive.google.com/drive/folders/15PSvn_ayfUBqu-Sr84MCvvwNH_AvtKyt?usp=sharing)**
+[![Install from Web Store](https://img.shields.io/badge/Available_on-Chrome_Web_Store-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/akogncemlpgmleogjdblpbcdndlabhpk?utm_source=item-share-cb)
+
+**[📂 Access the Source Code on Google Drive](https://drive.google.com/drive/folders/15PSvn_ayfUBqu-Sr84MCvvwNH_AvtKyt?usp=sharing)**
 
 ---
 
@@ -42,26 +43,19 @@ Since this is a developer preview, you can download the latest version directly 
 
 ---
 
-## 🚀 Installation Guide (For Beginners)
+## 🚀 Installation Guide 
 
-Since this extension is in "Developer Mode" (not yet on the Chrome Web Store), follow these simple steps to install it:
+Installing LankaCast takes just a few seconds:
 
-### **Step 1: Download & Prepare**
-1.  Click the **Download** link above.
-2.  Download the files (if it's a ZIP file, right-click and select **Extract All** or **Unzip**).
-3.  Save the folder somewhere safe (e.g., `Documents/LankaCast`).
+### **Step 1: Go to the Web Store**
+Click the **[Chrome Web Store Link](https://chromewebstore.google.com/detail/akogncemlpgmleogjdblpbcdndlabhpk?utm_source=item-share-cb)** to open the official extension page.
 
-### **Step 2: Open Chrome Extensions**
-1.  Open Google Chrome.
-2.  In the address bar, type `chrome://extensions` and press **Enter**.
-3.  **Enable Developer Mode**: Look for a toggle switch in the **top-right corner** and turn it **ON** (Blue).
+### **Step 2: Add to Chrome**
+1. Click the blue **"Add to Chrome"** button.
+2. A prompt will appear asking for permissions. Click **"Add extension"**.
+3. 🎉 **Success!** You will see the **LankaCast** icon (Lion Flag) added to your browser.
 
-### **Step 3: Load the Extension**
-1.  Click the button that says **"Load unpacked"** (top-left).
-2.  Select the **LankaCast folder** you extracted in Step 1 (make sure you select the folder that contains `manifest.json`).
-3.  🎉 **Success!** You should now see the **LankaCast** icon (Lion Flag) in your browser toolbar.
-
-> **Tip:** Click the "Puzzle Piece" icon 🧩 in Chrome and **Pin** 📌 LankaCast to keep it visible!
+> **Tip:** Click the "Puzzle Piece" icon 🧩 in Chrome and **Pin** 📌 LankaCast to keep it permanently visible in your toolbar!
 
 ---
 
@@ -70,7 +64,7 @@ Since this extension is in "Developer Mode" (not yet on the Chrome Web Store), f
 ### 1. Reading News
 * Click the extension icon to open the popup.
 * Use the bottom navigation bar to switch between **Sinhala** and **English** tabs.
-* Click any news card to read the full story on the official website.
+* Click any news card to read the full story on the official Ada Derana website.
 
 ### 2. Setting Keyword Alerts
 * Go to the **Alerts** tab.
@@ -105,6 +99,6 @@ LankaCast/
 └── images/             # Icons
 ```
 ## 👨‍💻 Developer
-### Developed with ❤️ by *SadeshRaj*.
+### Solution by *SadeshRaj*.
 ## 📜 License
 ### This project is open-source and available under the MIT License.
