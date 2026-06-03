@@ -3,7 +3,6 @@ const URL_ENGLISH = "http://www.adaderana.lk/rss.php";
 const ALARM_NAME = "newsFetcher";
 const NOTIF_ICON = "images/LankaCast.png";
 
-
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === "refreshNews") {
         fetchAllNews().then(() => sendResponse({ status: "done" }));
@@ -30,9 +29,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === ALARM_NAME) fetchAllNews();
-    if (alarm.name === 'analyticsHeartbeat') sendHeartbeat();
 });
-
 
 async function fetchAllNews() {
     await fetchFeed(URL_SINHALA, 'sinhalaNews', 'lastSinhalaLink');
@@ -52,7 +49,6 @@ async function fetchFeed(url, storageKey, lastLinkKey) {
             let data = {};
             data[storageKey] = items;
 
-
             chrome.storage.local.get(
                 [lastLinkKey, 'notificationsEnabled', 'keywords', 'alertHistory', 'unreadCount'],
                 (localData) => {
@@ -66,7 +62,6 @@ async function fetchFeed(url, storageKey, lastLinkKey) {
         console.warn(`LankaCast: Retrying ${storageKey} later.`, error);
     }
 }
-
 
 function parseRSS(xmlText) {
     const items = [];
@@ -142,13 +137,11 @@ function parseDate(dateString) {
     } catch (e) { return null; }
 }
 
-
 function checkForNewNews(items, lastLink, lastLinkKey, localData) {
     if (!items || items.length === 0) return;
 
     const latestStory = items[0];
     let newItems = [];
-
 
     if (lastLink) {
         for (let i = 0; i < items.length; i++) {
@@ -156,7 +149,6 @@ function checkForNewNews(items, lastLink, lastLinkKey, localData) {
             newItems.push(items[i]);
         }
     } else {
-
         let updateData = {};
         updateData[lastLinkKey] = latestStory.link;
         chrome.storage.local.set(updateData);
@@ -165,38 +157,38 @@ function checkForNewNews(items, lastLink, lastLinkKey, localData) {
 
     if (newItems.length === 0) return;
 
-    // 1. Update Last Link
+     
     let updateData = {};
     updateData[lastLinkKey] = latestStory.link;
 
-    // 2. Update Badge Count (Accumulative)
+     
     let currentUnread = localData.unreadCount || 0;
     let totalUnread = currentUnread + newItems.length;
 
-    // Cap visual count at 99+ for safety, but store real number
+     
     const countText = totalUnread > 99 ? "99+" : totalUnread.toString();
     chrome.action.setBadgeText({ text: countText });
     chrome.action.setBadgeBackgroundColor({ color: "#D32F2F" });
 
     updateData['unreadCount'] = totalUnread;
 
-    // 3. Process Notifications & Alert History
+     
     let updatedHistory = localData.alertHistory || [];
     let keywords = localData.keywords || [];
-    const globalNotifEnabled = localData.notificationsEnabled !== false; // Default true
+    const globalNotifEnabled = localData.notificationsEnabled !== false;  
 
-    // Reverse to process oldest new item first
+     
     newItems.reverse().forEach((item, index) => {
 
-        // Check for Keyword Match
+         
         let isKeywordMatch = false;
         if (keywords.length > 0) {
             const titleLower = item.title.toLowerCase();
             isKeywordMatch = keywords.some(k => titleLower.includes(k.toLowerCase()));
         }
 
-        // Determine if we should notify
-        // Rule: Notify if Global is ON OR if Keyword Matches (even if Global is OFF)
+         
+         
         const shouldNotify = globalNotifEnabled || isKeywordMatch;
 
         if (shouldNotify) {
@@ -210,7 +202,7 @@ function checkForNewNews(items, lastLink, lastLinkKey, localData) {
                     requireInteraction: false
                 }, (notifId) => {
                     if (notifId) {
-                        // Updated Timeout: 8 Seconds
+                         
                         setTimeout(() => {
                             chrome.notifications.clear(notifId);
                         }, 8000);
@@ -219,49 +211,18 @@ function checkForNewNews(items, lastLink, lastLinkKey, localData) {
             }, index * 1000);
         }
 
-        // Save to History ONLY if Keyword Match
+         
         if (isKeywordMatch) {
-            // Avoid duplicates in history
+             
             if (!updatedHistory.some(h => h.link === item.link)) {
-                updatedHistory.unshift(item); // Add to top
+                updatedHistory.unshift(item);  
             }
         }
     });
 
-    // Trim history to max 50 items to save space
+     
     if (updatedHistory.length > 50) updatedHistory = updatedHistory.slice(0, 50);
 
     updateData['alertHistory'] = updatedHistory;
     chrome.storage.local.set(updateData);
-}
-
-const GA_MEASUREMENT_ID = 'G-G65EBSVJRQ';
-const GA_API_SECRET = 'qT05vYi1QqSfK14TDtQT0w';
-const GA_EVENT_NAME = 'daily_active_user';
-
-chrome.storage.local.get('clientId', (data) => {
-    if (!data.clientId) {
-        const uniqueId = self.crypto.randomUUID();
-        chrome.storage.local.set({ clientId: uniqueId });
-    }
-    sendHeartbeat();
-});
-chrome.alarms.create('analyticsHeartbeat', { periodInMinutes: 1440 });
-
-async function sendHeartbeat() {
-    const data = await chrome.storage.local.get('clientId');
-    const clientId = data.clientId;
-    if (!clientId) return;
-    try {
-        await fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${GA_MEASUREMENT_ID}&api_secret=${GA_API_SECRET}`, {
-            method: "POST",
-            body: JSON.stringify({
-                client_id: clientId,
-                events: [{
-                    name: GA_EVENT_NAME,
-                    params: { engagement_time_msec: "100", session_id: Date.now().toString() }
-                }]
-            })
-        });
-    } catch (e) {}
 }
