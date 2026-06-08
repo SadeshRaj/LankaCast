@@ -27,7 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('themeBtn').addEventListener('click', toggleTheme);
 
     loadDataAsync();
+
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area !== 'local') return;
+        if (changes.englishNews) {
+            renderNewsData(changes.englishNews.newValue, 'english-hero', 'english-list', 'english-loader');
+        }
+        if (changes.sinhalaNews) {
+            renderNewsData(changes.sinhalaNews.newValue, 'sinhala-hero', 'sinhala-list', 'sinhala-loader');
+        }
+    });
 });
+
 
 function loadDataAsync() {
     chrome.storage.local.get(

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LankaCast Update</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f5f7;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            max-width: 480px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            text-align: center;
+            border: 1px solid #eaeaea;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            margin-bottom: 24px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            letter-spacing: -0.5px;
+        }
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 32px;
+        }
+        .version-badge .old {
+            color: #adb5bd;
+            text-decoration: line-through;
+        }
+        .version-badge .new {
+            color: #C62828;
+        }
+        .changelog {
+            text-align: left;
+            background: #fdfdfd;
+            border: 1px solid #f1f3f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .changelog h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #868e96;
+            margin: 0 0 12px 0;
+        }
+        .fix-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #343a40;
+        }
+        .fix-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .support-text {
+            font-size: 14px;
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            padding: 0 10px;
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn {
+            background: #C62828;
+            color: white;
+            border: 1px solid transparent;
+            padding: 14px 32px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            text-decoration: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .btn:hover {
+            background: #a82020;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: #ffffff;
+            color: #212529;
+            border-color: #ced4da;
+        }
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        .footer {
+            margin-top: 32px;
+            font-size: 13px;
+            color: #868e96;
+        }
+        .footer a {
+            color: #495057;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer a:hover {
+            color: #C62828;
+            text-decoration: underline;
+        }
+        .dev-logo {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 6px;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="images/UpdateLogo.png" alt="LankaCast Logo" class="logo">
+
+    <h1>LankaCast Updated</h1>
+
+    <div class="version-badge">
+        <span class="old" id="prev-version">v1.0.0</span>
+        <span>→</span>
+        <span class="new" id="curr-version">v1.0.1</span>
+    </div>
+
+    <div class="changelog">
+        <h3>Bug Fixes</h3>
+        <div class="fix-item">
+            <div class="fix-icon">🛠️</div>
+            <div>
+                <strong>English News Feed Restored:</strong> Fixed a critical issue that caused the English news section to display a blank screen. The feed now correctly fetches and displays the latest articles.
+            </div>
+        </div>
+    </div>
+
+    <div class="support-text">
+        If LankaCast helps you stay up to date, please consider taking a moment to rate it. Your support helps keep this project alive!
+    </div>
+
+    <div class="button-group">
+        <!-- Replace YOUR_EXTENSION_ID_HERE with your 32-character Chrome Web Store ID -->
+        <a href="https://chrome.google.com/webstore/detail/akogncemlpgmleogjdblpbcdndlabhpk/reviews" target="_blank" class="btn btn-secondary">
+            ⭐️ Leave a Review
+        </a>
+        <button class="btn" id="closeBtn">Continue to Extension</button>
+    </div>
+
+    <div class="footer">
+        <img src="images/devLogo.png" alt="Developer Logo" class="dev-logo">
+        Developed by <a target="_blank">SadeshRaj</a>
+    </div>
+</div>
+
+<script src="whats-new.js"></script>
+</body>
+</html>
