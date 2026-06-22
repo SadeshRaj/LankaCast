@@ -14,7 +14,6 @@ if (prev) {
     const prevEl = document.getElementById('prev-version');
     if (prevEl) {
         prevEl.style.display = 'none';
-        // Safely target the arrow (the next span element) to hide it
         const arrowSpan = prevEl.nextElementSibling;
         if (arrowSpan) arrowSpan.style.display = 'none';
     }
