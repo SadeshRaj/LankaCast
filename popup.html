@@ -35,19 +35,49 @@
         <div id="english-loader" class="skeleton-loader" style="display:none;"></div>
     </div>
 
+    <div id="view-tamil" class="tab-content">
+        <div id="tamil-hero" class="hero-section"></div>
+        <div id="tamil-list" class="list-section"></div>
+        <div id="tamil-loader" class="skeleton-loader" style="display:none;"></div>
+    </div>
+
     <div id="view-alerts" class="tab-content">
         <div class="alerts-header">
             <h2>Settings & Alerts</h2>
 
-            <div class="setting-row">
-                <span>Popup Notifications</span>
-                <label class="switch">
-                    <input type="checkbox" id="notifToggle" checked>
-                    <span class="slider round"></span>
-                </label>
+            <!-- FEATURE 1: Split settings section -->
+            <div class="setting-card">
+                <div class="setting-row master-row">
+                    <span>Global News Alerts</span>
+                    <label class="switch">
+                        <input type="checkbox" id="notifToggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="sub-settings-panel" id="subSettingsPanel">
+                    <div class="setting-row sub-row">
+                        <span>Sinhala News Channel</span>
+                        <label class="switch small-switch">
+                            <input type="checkbox" id="sinhalaToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row sub-row">
+                        <span>English News Channel</span>
+                        <label class="switch small-switch">
+                            <input type="checkbox" id="englishToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row sub-row">
+                        <span>Tamil News Channel</span>
+                        <label class="switch small-switch">
+                            <input type="checkbox" id="tamilToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
-
-            <p class="sub-text">Get notified for all news.</p>
         </div>
 
         <div class="input-card">
@@ -65,7 +95,7 @@
         <div class="dev-credit">
             <img src="images/devLogo.png" class="dev-logo" alt="SadeshRaj Logo">
             <div>
-                Developed by <strong>SadeshRaj</strong> <span class="version">v1.0.1</span>
+                Developed by <strong>SadeshRaj</strong> <span class="version">v1.1.0</span>
             </div>
         </div>
     </div>
@@ -84,6 +114,13 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
         </div>
         <span>English</span>
+    </button>
+
+    <button id="btn-tamil" class="nav-item">
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+        </div>
+        <span>Tamil</span>
     </button>
 
     <button id="btn-alerts" class="nav-item">

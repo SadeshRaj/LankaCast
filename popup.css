@@ -88,11 +88,9 @@ body {
     height: 28px;
     object-fit: contain;
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-    /* Default Light Mode Image */
     content: url("images/SLFlag.png");
 }
 
-/* Dark Mode Override for Header Flag */
 body.dark-mode .header-flag {
     content: url("images/darkSLFlag.png");
 }
@@ -153,10 +151,16 @@ body.dark-mode .header-flag {
     padding: 16px 16px 8px 16px;
 }
 
-.hero-card {
+.hero-card-wrapper {
     position: relative;
     width: 100%;
     height: 230px;
+}
+
+.hero-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
     border-radius: 18px;
     overflow: hidden;
     text-decoration: none;
@@ -191,6 +195,14 @@ body.dark-mode .header-flag {
     color: white;
 }
 
+.hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
 .hero-badge {
     background: var(--primary);
     color: white;
@@ -199,9 +211,18 @@ body.dark-mode .header-flag {
     text-transform: uppercase;
     padding: 4px 8px;
     border-radius: 6px;
-    margin-bottom: 8px;
-    display: inline-block;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* FEATURE 3: Floating share badge style inside Hero */
+.hero-wa {
+    font-size: 10px;
+    background: #128C7E !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.hero-wa:hover {
+    background: #0e6c61 !important;
 }
 
 .hero-title {
@@ -359,7 +380,7 @@ body.dark-mode .wa-icon {
     filter: drop-shadow(0 4px 6px rgba(211, 47, 47, 0.25));
 }
 
-/* --- ALERTS UI --- */
+/* --- ALERTS & SETTINGS UI --- */
 .alerts-header {
     padding: 24px 16px 12px;
 }
@@ -376,18 +397,55 @@ body.dark-mode .wa-icon {
     color: var(--text-secondary);
 }
 
+/* FEATURE 1: Group container card layout */
+.setting-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    margin-top: 16px;
+    overflow: hidden;
+}
+
 .setting-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
-    padding: 16px;
-    background: var(--bg-card);
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    padding: 14px 16px;
     font-size: 14px;
     font-weight: 600;
-    box-shadow: var(--shadow-card);
+    transition: opacity 0.3s ease;
+}
+
+.master-row {
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid var(--border);
+}
+
+body.dark-mode .master-row {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.sub-row {
+    padding: 10px 16px 10px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+body.dark-mode .sub-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.sub-row:last-child {
+    border-bottom: none;
+}
+
+/* Interactivity logic panel styles */
+.disabled-panel {
+    opacity: 0.4;
+    pointer-events: none;
 }
 
 .switch {
@@ -403,6 +461,11 @@ body.dark-mode .wa-icon {
     height: 0;
 }
 
+.small-switch {
+    width: 38px;
+    height: 20px;
+}
+
 .slider {
     position: absolute;
     cursor: pointer;
@@ -411,7 +474,7 @@ body.dark-mode .wa-icon {
     right: 0;
     bottom: 0;
     background-color: #CFD8DC;
-    transition: .4s;
+    transition: .3s;
 }
 
 .slider:before {
@@ -422,20 +485,27 @@ body.dark-mode .wa-icon {
     left: 3px;
     bottom: 3px;
     background-color: white;
-    transition: .4s;
+    transition: .3s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.small-switch .slider:before {
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
 }
 
 input:checked + .slider {
     background-color: var(--primary);
 }
 
-input:focus + .slider {
-    box-shadow: 0 0 1px var(--primary);
-}
-
 input:checked + .slider:before {
     transform: translateX(20px);
+}
+
+.small-switch input:checked + .slider:before {
+    transform: translateX(18px);
 }
 
 .slider.round {
@@ -519,7 +589,7 @@ input:focus {
 }
 
 .section-label {
-    padding: 10px 16px 0;
+    padding: 18px 16px 0;
     font-size: 11px;
     font-weight: 700;
     color: var(--text-secondary);
@@ -535,14 +605,12 @@ input:focus {
     font-weight: 500;
     letter-spacing: 0.3px;
     opacity: 0.8;
-    /* Centering logic */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
 }
 
-/* Dev Logo Styles */
 .dev-logo {
     width: 48px;
     height: 48px;
@@ -550,11 +618,9 @@ input:focus {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-    /* Default Light Mode Image */
     content: url("images/devLogo.png");
 }
 
-/* Dark Mode Override for Dev Logo */
 body.dark-mode .dev-logo {
     content: url("images/darkDevLogo.png");
 }
@@ -625,31 +691,17 @@ body.dark-mode .dev-logo {
 }
 
 @keyframes pulse {
-    0% {
-        background-color: var(--skeleton-base);
-    }
-    50% {
-        background-color: var(--skeleton-highlight);
-    }
-    100% {
-        background-color: var(--skeleton-base);
-    }
+    0% { background-color: var(--skeleton-base); }
+    50% { background-color: var(--skeleton-highlight); }
+    100% { background-color: var(--skeleton-base); }
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }

@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "LankaCast - News Alerts",
-  "version": "1.0.1",
-  "description": "Sinhala and English News from Ada Derana with Auto-Alerts.",
+  "name": "__MSG_extensionName__",
+  "version": "1.1.0",
+  "description": "__MSG_extensionDesc__",
+  "default_locale": "en",
   "permissions": [
     "alarms",
     "storage",
@@ -13,7 +14,9 @@
     "https://www.adaderana.lk/*",
     "https://sinhala.adaderana.lk/*",
     "https://adaderana.lk/*",
-    "https://ada-derana-prod-english-news-temp.s3.amazonaws.com/*"
+    "https://ada-derana-prod-english-news-temp.s3.amazonaws.com/*",
+    "https://adaderanatamil.lk/*",
+    "https://www.adaderanatamil.lk/*"
   ],
   "background": {
     "service_worker": "background.js"
