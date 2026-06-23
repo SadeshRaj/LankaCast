@@ -1,12 +1,12 @@
 # 🇱🇰 LankaCast - Sri Lankan News Extension
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg?style=for-the-badge)
 ![Manifest](https://img.shields.io/badge/Manifest-V3-success.svg?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)
 
-> **The ONE AND ONLY browser extension delivering both Sinhala and English news from Sri Lanka directly to your toolbar.**
+> **The ULTIMATE browser companion delivering Sinhala, English, and Tamil news from Sri Lanka directly to your toolbar.**
 
-**LankaCast** is a unique, lightweight Chrome Extension designed for Sri Lankans. It fetches real-time news exclusively from **Ada Derana** and keeps you connected with what's happening in the island. It features automatic background updates, smart keyword alerts, dark mode, and one-click WhatsApp sharing.
+**LankaCast** is a premium, lightweight Chrome Extension designed for Sri Lankans. It fetches real-time news exclusively from **Ada Derana** and keeps you instantly connected with everything happening on the island. It features independent multi-language channel notification toggles, smart keyword tracking, native dark mode, and seamless multi-placement WhatsApp sharing.
 
 ---
 
@@ -22,9 +22,9 @@ LankaCast is officially available on the Chrome Web Store! You can install it di
 
 ## 📸 Screenshots
 
-| **Sinhala Feed** | **English Feed** | **Settings & Alerts** |
-|:---:|:---:|:---:|
-| ![Sinhala View](images/SS/lightSinhala.png) | ![English View](images/SS/darkEnglish.png) | ![Alerts Tab](images/SS/darkAlert.png) |
+| **Sinhala Feed** | **English Feed** | **Tamil Feed** | **Settings & Alerts** |
+|:---:|:---:|:---:|:---:|
+| ![Sinhala View](images/SS/lightSinhala.png) | ![English View](images/SS/darkEnglish.png) | ![Tamil View](images/SS/darkTamil.png) | ![Alerts Tab](images/SS/darkAlert.png) |
 
 | **WhatsApp Sharing** | **Extension Installed** |
 |:---:|:---:|
@@ -34,12 +34,12 @@ LankaCast is officially available on the Chrome Web Store! You can install it di
 
 ## ✨ Unique Features
 
-* **📰 Dual-Language Hub:** Seamlessly switch between **Sinhala** and **English** news feeds in one popup.
-* **⚡ Auto-Refresh:** Background service workers fetch updates every minute to keep you current.
-* **🔔 Smart Alerts:** Set custom keywords (e.g., "Cricket", "Election") to receive instant notifications when they appear in the news, even if popup notifications are turned off.
-* **🌙 Dark Mode:** Fully optimized dark theme that syncs with your preferences.
-* **📲 Quick Share:** Share any news item directly to **WhatsApp** with a single click.
-* **🛡️ Reliability:** Built on Manifest V3 for better performance and battery life.
+* **📰 Tri-Lingual Hub:** Seamlessly switch between **Sinhala**, **English**, and **Tamil** news feeds instantly within a single popup panel.
+* **⚙️ Granular Channel Control:** Customize your alerts by turning off specific language streams while keeping others active. Includes a Master Switch to override and silence all global streams instantly.
+* **⚡ Background Syncing:** Runs on a low-memory service worker that syncs updates every minute, optimized out-of-the-box for **Windows** and **macOS**.
+* **🔔 Smart Alerts:** Set custom tracking keywords (e.g., "Cricket", "Election") to receive instant desktop notifications the second a matching title hits the wire—even if global channels are muted.
+* **🌙 Interactive Dark Theme:** High-end UI that perfectly matches dark style layouts for comfortable reading during late hours.
+* **📲 Multi-Placement Share:** Share standard card links or the top-pinned primary **Latest News Hero Banner** directly to WhatsApp with a single click.
 
 ---
 
@@ -63,16 +63,18 @@ Click the **[Chrome Web Store Link](https://chromewebstore.google.com/detail/ako
 
 ### 1. Reading News
 * Click the extension icon to open the popup.
-* Use the bottom navigation bar to switch between **Sinhala** and **English** tabs.
-* Click any news card to read the full story on the official Ada Derana website.
+* Use the bottom navigation bar to switch between the **Sinhala**, **English**, and **Tamil** tabs.
+* Click any news card or top hero banner to read the full story on the official Ada Derana website.
 
-### 2. Setting Keyword Alerts
+### 2. Managing Notification Channels
 * Go to the **Alerts** tab.
-* Type a keyword (e.g., `Cricket`) in the input box and click **Add**.
-* You will now receive a system notification whenever a news title matches that keyword.
+* Toggle individual sliders under the *Global News Alerts* card to fine-tune which language streams are allowed to drop desktop updates.
+* Toggle the **Global Master Override** off to silence all channels effortlessly.
 
-### 3. Dark Mode
-* Click the **Sun/Moon Icon** in the top header to toggle between Light and Dark modes instantly.
+### 3. Setting Keyword Alerts
+* Go to the **Alerts** tab.
+* Type a custom search word (e.g., `Economy`) in the input box and click **Add**.
+* You will now receive a priority system notification whenever a news title matches that phrase.
 
 ---
 
@@ -80,9 +82,9 @@ Click the **[Chrome Web Store Link](https://chromewebstore.google.com/detail/ako
 
 * **Frontend:** HTML5, CSS3 (Native CSS Variables)
 * **Logic:** JavaScript (ES6+, Async/Await)
-* **Platform:** Chrome Extension Manifest V3
-* **Storage:** `chrome.storage.local` for settings and history
-* **APIs:** Ada Derana RSS Feeds & Google Analytics 4
+* **Platform:** Chrome Extension Manifest V3 (Internationalized Engine)
+* **Storage:** `chrome.storage.local` for settings, channels, and keyword alerts history
+* **APIs:** Ada Derana Live Web Feeds (Fully CORS Preflight Compliant)
 
 ---
 
@@ -90,15 +92,22 @@ Click the **[Chrome Web Store Link](https://chromewebstore.google.com/detail/ako
 
 ```text
 LankaCast/
-├── manifest.json       # Extension configuration (Permissions, V3)
-├── popup.html          # Main UI structure
-├── popup.css           # Styling
-├── popup.js            # UI logic & Data rendering
-├── background.js       # Background fetcher & Notification logic
+├── manifest.json       # Extension configurations & locale routing (V3)
+├── popup.html          # Tri-lingual multi-tab application dashboard layout
+├── popup.css           # Global theme matrices & layout styles
+├── popup.js            # Reactive rendering and storage event engine
+├── background.js       # Background fetch routines & non-intrusive alert system
+├── whats-new.html      # Product update logs presentation template
+├── whats-new.js        # Parameter parser for release versions
 ├── README.md           # Documentation
-└── images/             # Icons
+├── _locales/           # i18n Internationalization localization files (en, si, ta)
+└── images/             # Icons & layout asset flags
 ```
+
 ## 👨‍💻 Developer
+
 ### Solution by *SadeshRaj*.
+
 ## 📜 License
-### This project is open-source and available under the MIT License.
+
+### This project is open-source and available under the MIT License. 
